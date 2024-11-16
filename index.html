@@ -1,0 +1,1394 @@
+<!--SATADELICA by BXL909 -->
+<!--BXL909.GITHUB.IO     -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satadelica</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color:orange;
+        }
+        .price-container {
+            position: static;
+            margin-bottom: 10px;
+        }
+
+        #dailyChangeDisplay, #highLowDisplay, #blockDisplay, #marketCapDisplay, #priceDisplay {
+            position: static;
+            display: block;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            font-weight: normal;
+            -webkit-text-stroke: 0;
+            text-shadow: none;
+            white-space: nowrap;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        #dailyChangeDisplay, #highLowDisplay, #blockDisplay, #marketCapDisplay {
+            bottom: auto;
+        }
+
+        canvas {
+            display: block;
+        }
+        .toggle-button {
+            position: fixed;
+            text-align: center;
+            width:140px;
+            bottom: 20px;
+            right: 20px;
+            padding: 2px;
+            background-color: rgba(247, 147, 26, 0.7); 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .toggle-button:hover {
+            background-color: rgba(247, 147, 26, 0.9);
+        }
+
+        .size-control {
+            position: fixed;
+            text-align: center;
+            width: 140px;
+            bottom: 44px;
+            right: 20px;
+            padding: 2px;
+            background-color: rgba(247, 147, 26, 0.7);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 1000;
+            text-align: center;
+            text-align-last: center;
+            -webkit-text-align-last: center;
+            -moz-text-align-last: center;
+            -webkit-appearance: none;
+            appearance: none;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .size-control:hover {
+            background-color: rgba(247, 147, 26, 0.9);
+        }
+
+        .logo-overlay {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            width: 350px;
+            height: auto;
+        }
+
+        .controls-panel {
+            position: static;
+        }
+
+        .controls-header {
+            color: #f7931a;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            
+            user-select: none;
+        }
+
+        .controls-content {
+            display: none;
+        }
+
+        .controls-content.show {
+            display: block;
+        }
+
+        .controls-content > * {
+            margin: 5px 0;
+            position: static !important;
+            bottom: auto !important;
+            right: auto !important;
+        }
+
+        .text-controls-wrapper {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 1000;
+        }
+
+        .text-controls-container {
+            background-color: rgba(17, 17, 17, 0.8);
+            border: 1px solid rgba(247, 147, 26, 0.7);
+            padding: 4px;
+            display: flex;
+            width: 180px;
+            max-width: 180px;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: max-height 0.3s ease-out;
+            max-height: 520px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .text-controls-container.hidden {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .control-tab {
+            position: absolute;
+            width: 42px;
+            top: -15px;
+            left: 0;
+            background-color: rgba(247, 147, 26, 0.7);
+            padding: 3px;
+            padding-top: 1px;
+            padding-bottom: 1px;
+            padding-left: 5px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            color: white;
+            font-family: Arial, sans-serif;
+            user-select: none;
+        }
+
+        .control-tab:hover {
+            background-color: rgba(247, 147, 26, 0.9);
+        }
+
+        .price-container {
+            margin-bottom: 10px;
+        }
+
+        .controls-panel {
+            width: 100%;
+        }
+
+        .controls-content > * {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        #hashrateDisplay {
+            position: static;
+            display: block;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            font-weight: normal;
+            -webkit-text-stroke: 0;
+            text-shadow: none;
+            white-space: nowrap;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .size-control option {
+            text-align: center;
+            text-align-last: center;
+            -webkit-text-align-last: center;
+        }
+
+        .wtf-button {
+            position: fixed;
+            text-align: center;
+            width: 60px;
+            bottom: 20px;
+            right: 20px;
+            padding: 2px;
+            background-color: rgba(17, 17, 17, 0.8);
+            border: 1px solid rgba(247, 147, 26, 0.7);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .wtf-button:hover {
+            background-color: rgba(247, 147, 26, 0.9);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #111;
+            border: 1px solid rgba(247, 147, 26, 0.7);
+            padding: 20px;
+            max-width: 600px;
+            width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            color: white;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            font-weight: normal;
+            -webkit-text-stroke: 0;
+            text-shadow: none;
+            white-space: normal;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: rgba(247, 147, 26, 0.7);
+            font-size: 20px;
+        }
+
+        .close-modal:hover {
+            color: rgba(247, 147, 26, 0.9);
+        }
+
+        .modal-content a {
+            color: rgba(247, 147, 26, 0.7);
+            text-decoration: none;
+        }
+
+        .modal-content a:visited {
+            color: rgba(247, 147, 26, 0.7);
+        }
+
+        .modal-content a:hover {
+            color: rgba(247, 147, 26, 1); 
+        }
+
+        .modal-content img {
+            border: 1px solid rgba(247, 147, 26, 0.7);
+        }
+
+        .modal-content .bxl909-button {
+            border: 1px solid rgba(247, 147, 26, 0.7);
+            margin-top: 10px;
+        }
+
+        .version-number {
+            position: fixed;
+            top: 5px;
+            right: 5px;
+            color: rgba(247, 147, 26, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+    </style>
+</head>
+<body>
+    <img src="satadelicaLogo.png" 
+         alt="Satadelica Logo" 
+         class="logo-overlay">
+    
+    <div class="text-controls-wrapper">
+        <div class="control-tab">HIDE</div>
+        <div class="text-controls-container">
+            <div id="priceDisplay"><span style="color: white;">BTC/USD: </span>Loading...</div>
+            <div id="dailyChangeDisplay">24h: -- (--%)</div>
+            <div id="highLowDisplay">H: -- L: --</div>
+            <div id="marketCapDisplay">MARKET CAP: Loading...</div>
+            <div id="blockDisplay">BLOCK HEIGHT: Loading...</div>
+            <div id="hashrateDisplay">HASHRATE: Loading...</div>
+            <div class="controls-panel">
+                <div class="controls-header">+ OPEN CONTROLS</div>
+                <div class="controls-content">
+                    <select class="size-control" id="performanceMode">
+                        <option value="normal">NORMAL MODE</option>
+                        <option value="lite">LITE MODE</option>
+                    </select>
+                    <select class="size-control" id="toggleColor">
+                        <option value="off">PRICE PARTICLES</option>
+                        <option value="on">RAINBOW PARTICLES</option>
+                    </select>
+                    <select class="size-control" id="particleSize">
+                        <option value="1">SMALL PARTICLES</option>
+                        <option value="3">MEDIUM PARTICLES</option>
+                        <option value="5">LARGE PARTICLES</option>
+                    </select>
+                    <select class="size-control" id="fadeRate">
+                        <option value="0.02" selected>HIGH SATURATION</option>
+                        <option value="0.05">MID SATURATION</option>
+                        <option value="0.1">LOW SATURATION</option>
+                    </select>
+                    <button class="toggle-button" id="toggleWhitepaper">WHITEPAPER TEXT ON</button>
+                    <select class="size-control" id="logoSelect">
+                        <option value="bitcoin">BITCOIN LOGO</option>
+                        <option value="om">BITCOIN OM</option>
+                        <option value="none">NO LOGO</option>
+                    </select>
+                    <button class="toggle-button" id="toggleBlobs">COLOUR BLOBS ON</button>
+                    <button class="toggle-button" id="toggleChart">CHART ON</button>
+                    <button class="toggle-button" id="toggleMouse">MOUSE TRAILS OFF</button>
+                    <button class="toggle-button" id="toggleVector">VECTOR PRICE ON</button>
+                    <button class="toggle-button" id="fullscreenButton">FULLSCREEN</button>
+                    <button class="toggle-button" id="screenshotButton">SCREENSHOT</button>
+                    <button class="toggle-button" id="resetButton">RESET TO DEFAULTS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <canvas id="particleCanvas" style="color-scheme: normal"></canvas>
+
+    <button class="wtf-button">WTF?</button>
+
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>WTF IS THIS?</h2>
+            <p>
+
+                Satadelica is a Bitcoin price visualizer. The price data is from <a href = "https://docs.bitfinex.com/reference/ws-public-ticker">Bitfinex</a>, block height and hashrate from <a href = "https://mempool.space">mempool.space</a> and market cap from <a href = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true">CoinGecko</a>.<br>
+                <br>
+                Controls:<br>
+                1. Select between noemal mode and lite mode (better if performance is an issue).<br>
+                2. Select particles that reflects price movements (red/green) when the price updates, or multicolour particles when the price updates.<br>
+                3. Select particle size.<br>
+                4. Select colour saturation.<br>
+                5. Toggle text fragments from Bitcoin whitepaper.<br>
+                6. Select bitcoin logo, 'bitcoin om' or no logo.<br>
+                7. Toggle colour blobs. <br>
+                8. Toggle price chart. The chart builds up over time as Satadelica builds a price history.<br>
+                9. Toggle colourful mouse trails.<br>
+                10. Toggle the floating vector price.<br>
+                11. Full screen mode.<br>
+                12. Take a screenshot of the current view.<br>
+                13. Reset to default settings.<br>
+
+                <br>
+                Performance - tested on Safari & Arc on iOS, and Arc (Chromium), Firefox & Edge on Windows. Concessions made for Edge browser due to performance issues. Your results may vary.<br>
+                <br>
+                by <a target="_blank" href="https://bxl909.github.io">BXL909</a>. Follow the link for <a target="_blank" href="https://bxl909.github.io">more of my free & open source Bitcoin projects</a>, or <a href = "https://btcdir.org/donate/">send me a few sats</a> to keep me making them (Let's be honest though, I'll probably keep making them anyway!) 🧡<br>
+                <br>
+                <a target="_blank" href="https://bxl909.github.io">
+                    <img width="120px" src="BXL909Button.png" class="bxl909-button">
+                </a></p>
+        </div>
+    </div>
+
+    <div class="version-number">v1.0</div>
+
+    <script>
+        let isEdge = navigator.userAgent.includes("Edg/");
+        
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d', {
+            colorSpace: 'srgb',
+            alpha: true,
+            willReadFrequently: false
+        });
+        const priceDisplay = document.getElementById('priceDisplay');
+        const particles = [];
+        let maxParticles = 500;
+        const priceHistory = [];
+        const maxPricePoints = 100;
+        let lastPrice = 0;
+        let showChart = true;
+        let colorCycle = 0;
+        let rainbowMode = false;
+        const blobs = [];
+        const blobCount = 5;
+        let showBlobs = true;
+        const floatingTexts = [];
+        const maxFloatingTexts = 3;
+        let showWhitepaper = true;
+        let fadeRate = 0.02;
+        let showVectorPrice = true;
+        
+        const whitePaperFragments = [
+            "Bitcoin: A Peer-to-Peer Electronic Cash System",
+            "verify the signatures to verify the chain",
+            "cryptographic proof instead of trust",
+            "a purely peer-to-peer version of electronic cash",
+            "a solution to the double-spending problem",
+            "an ongoing chain of hash-based proof-of-work",
+            "the network timestamps transactions",
+            "the longest chain serves as proof",
+            "as long as honest nodes control the network",
+            "transactions that are computationally impractical to reverse",
+            "honest nodes control a majority of CPU power",
+            "peer-to-peer distributed timestamp server",
+            "a chain of digital signatures",
+            "agree on a single history",
+            "SHA-256",
+            "They vote with their CPU power",
+            "verified by executing a single hash",
+            "the network is robust in its unstructured simplicity"
+        ];
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const ws = new WebSocket('wss://api-pub.bitfinex.com/ws/2');
+
+        ws.onopen = () => {
+            ws.send(JSON.stringify({
+                event: 'subscribe',
+                channel: 'ticker',
+                symbol: 'tBTCUSD'
+            }));
+        };
+
+        let lastUpdateTime = 0;
+        const UPDATE_INTERVAL = 1000; 
+
+        ws.onmessage = (event) => {
+            const currentTime = Date.now();
+            if (currentTime - lastUpdateTime < UPDATE_INTERVAL) return;
+            
+            const data = JSON.parse(event.data);
+            if (Array.isArray(data) && data[1] !== 'hb') {
+                const [ , [ bid, bid_size, ask, ask_size, daily_change, daily_change_relative, lastPrice, volume, high, low] ] = data;
+                handlePriceUpdate(parseFloat(lastPrice), parseFloat(high), parseFloat(low), daily_change, daily_change_relative);
+                lastUpdateTime = currentTime;
+            }
+        };
+
+        const numberSegments = {
+            '$': [
+                [[0.5,0], [0.5,2]],     // center vertical line
+                [[1,0.5], [0,0.5]],     // top curve start
+                [[0,0.5], [0,0.8]],     // left top vertical
+                [[0,0.8], [1,1.2]],     // S curve middle
+                [[1,1.2], [1,1.5]],     // right bottom vertical
+                [[1,1.5], [0,1.5]]      // bottom curve end
+            ],
+            '0': [
+                [[0,0], [1,0]],  // top
+                [[1,0], [1,2]],  // right
+                [[1,2], [0,2]],  // bottom
+                [[0,2], [0,0]]   // left
+            ],
+            '1': [
+                [[0.5,0], [0.5,2]]  // vertical
+            ],
+            '2': [
+                [[0,0], [1,0]],   // top
+                [[1,0], [1,1]],   // right top
+                [[1,1], [0,1]],   // middle
+                [[0,1], [0,2]],   // left bottom
+                [[0,2], [1,2]]    // bottom
+            ],
+            '3': [
+                [[0,0], [1,0]],   // top
+                [[1,0], [1,1]],   // right top
+                [[0,1], [1,1]],   // middle
+                [[1,1], [1,2]],   // right bottom
+                [[1,2], [0,2]]    // bottom
+            ],
+            '4': [
+                [[0,0], [0,1]],   // left top
+                [[0,1], [1,1]],   // middle
+                [[1,0], [1,2]]    // right
+            ],
+            '5': [
+                [[1,0], [0,0]],   // top
+                [[0,0], [0,1]],   // left top
+                [[0,1], [1,1]],   // middle
+                [[1,1], [1,2]],   // right bottom
+                [[1,2], [0,2]]    // bottom
+            ],
+            '6': [
+                [[1,0], [0,0]],   // top
+                [[0,0], [0,2]],   // left
+                [[0,2], [1,2]],   // bottom
+                [[1,2], [1,1]],   // right bottom
+                [[1,1], [0,1]]    // middle
+            ],
+            '7': [
+                [[0,0], [1,0]],   // top
+                [[1,0], [1,2]]    // right
+            ],
+            '8': [
+                [[0,0], [1,0]],   // top
+                [[1,0], [1,2]],   // right
+                [[1,2], [0,2]],   // bottom
+                [[0,2], [0,0]],   // left
+                [[0,1], [1,1]]    // middle
+            ],
+            '9': [
+                [[0,0], [1,0]],   // top
+                [[1,0], [1,2]],   // right
+                [[1,2], [0,2]],   // bottom
+                [[0,0], [0,1]],   // left top
+                [[0,1], [1,1]]    // middle
+            ]
+        };
+
+        class VectorPrice {
+            constructor() {
+                this.currentSegments = [];
+                this.targetSegments = [];
+                this.transitionProgress = 1;
+                this.lastPrice = null;
+                this.color = '#f7931a';
+                
+                // Add position and movement properties
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = 1;
+                this.rotationAngle = 0;
+                this.rotationSpeed = 0.008;
+            }
+
+            setNewPrice(price) {
+                // Determine color based on price movement
+                if (this.lastPrice !== null) {
+                    if (price > this.lastPrice) {
+                        this.color = '#00ff00';  // Green for price increase
+                    } else if (price < this.lastPrice) {
+                        this.color = '#ff0000';  // Red for price decrease
+                    }
+                }
+                
+                this.lastPrice = price;
+                this.currentSegments = [...this.targetSegments];
+                this.targetSegments = this.priceToSegments(price);
+                this.transitionProgress = 0;
+            }
+
+            priceToSegments(price) {
+                const segments = [];
+                const digits = '$' + price.toString();  
+                let xOffset = 0;
+                
+                for (const digit of digits) {
+                    const digitSegments = numberSegments[digit] || [];
+                    digitSegments.forEach(segment => {
+                        segments.push([
+                            [segment[0][0] + xOffset, segment[0][1]],
+                            [segment[1][0] + xOffset, segment[1][1]]
+                        ]);
+                    });
+                    xOffset += 1.5;  // Space between characters
+                }
+                
+                return segments;
+            }
+
+            update() {
+                // Update position
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.angle = Math.PI - this.angle;
+                }
+                if (this.y < 0 || this.y > canvas.height) {
+                    this.angle = -this.angle;
+                }
+                
+                // Update rotation
+                this.rotationAngle += this.rotationSpeed;
+                
+                // Keep position within bounds
+                this.x = Math.max(0, Math.min(canvas.width, this.x));
+                this.y = Math.max(0, Math.min(canvas.height, this.y));
+            }
+
+            draw(ctx) {
+                if (this.transitionProgress < 1) {
+                    this.transitionProgress += 0.05;
+                }
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotationAngle);
+
+                this.targetSegments.forEach((segment, i) => {
+                    const currentSegment = this.currentSegments[i] || segment;
+                    
+                    if (!segment || !currentSegment) return;
+                    
+                    try {
+                        ctx.beginPath();
+                        ctx.strokeStyle = this.color;
+                        ctx.lineWidth = 1;
+
+                        const x1 = currentSegment[0][0] * (1 - this.transitionProgress) + segment[0][0] * this.transitionProgress;
+                        const y1 = currentSegment[0][1] * (1 - this.transitionProgress) + segment[0][1] * this.transitionProgress;
+                        const x2 = currentSegment[1][0] * (1 - this.transitionProgress) + segment[1][0] * this.transitionProgress;
+                        const y2 = currentSegment[1][1] * (1 - this.transitionProgress) + segment[1][1] * this.transitionProgress;
+
+                        // Increased scale from 0.5 to 1.0
+                        const scale = 1.0;
+                        ctx.moveTo(x1 * 20 * scale, y1 * 20 * scale);
+                        ctx.lineTo(x2 * 20 * scale, y2 * 20 * scale);
+                        ctx.stroke();
+                    } catch (error) {
+                        console.error('Error drawing segment:', error, segment);
+                    }
+                });
+                
+                ctx.restore();
+            }
+        }
+
+        const vectorPrice = new VectorPrice();
+
+        let animationFrameId;
+        let isAnimating = true;
+
+        function startAnimation() {
+            if (!isAnimating) {
+                isAnimating = true;
+                animate();
+            }
+        }
+
+        function stopAnimation() {
+            isAnimating = false;
+            cancelAnimationFrame(animationFrameId);
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            
+            if (needsUpdate) {
+                updateParticles();
+                drawParticles();
+                needsUpdate = false;
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // Stop animation when tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAnimation();
+            } else {
+                startAnimation();
+            }
+        });
+
+        function handlePriceUpdate(price, high, low, daily_change, daily_change_relative) {
+            const priceDiff = price - lastPrice;
+            
+            vectorPrice.setNewPrice(price.toFixed(0));
+            
+            priceHistory.push(price);
+            if (priceHistory.length > maxPricePoints) {
+                priceHistory.shift();
+            }
+            
+            priceDisplay.innerHTML = `<span style="color: white;">BTC / USD: $</span>${price.toFixed(0)}`;
+            document.getElementById('highLowDisplay').textContent = 
+                `24H H: $${high.toFixed(0)} L: $${low.toFixed(0)}`;
+            
+            const dailyChange = parseFloat(daily_change).toFixed(0);
+            const dailyChangePercent = (parseFloat(daily_change_relative) * 100).toFixed(1);
+            const color = dailyChange >= 0 ? '#00ff00' : '#ff0000';
+            const dailyChangeDisplay = document.getElementById('dailyChangeDisplay');
+            dailyChangeDisplay.innerHTML = `24H CHANGE: $<span style="color: ${color}">${dailyChange}</span> (<span style="color: ${color}">${dailyChangePercent}</span>%)`;
+
+            priceDisplay.style.color = priceDiff > 0 ? '#00ff00' : '#ff0000';
+            
+            createParticles(priceDiff);
+            lastPrice = price;
+            needsUpdate = true;
+        }
+
+        const particlePool = [];
+        const POOL_SIZE = 1000;
+
+        // Initialize pool
+        for (let i = 0; i < POOL_SIZE; i++) {
+            particlePool.push({
+                active: false,
+                x: 0, y: 0, speed: 0, angle: 0,
+                size: 0, color: '', alpha: 0, decay: 0
+            });
+        }
+
+        function createParticles(priceDiff) {
+            const particleCount = Math.min(50 + Math.abs(priceDiff) * 5, maxParticles / 2);
+            const selectedSize = parseInt(document.getElementById('particleSize').value);
+            
+            colorCycle = (colorCycle + 2) % 360;
+            
+            // Keep track of available particles with a counter
+            let availableParticleCount = POOL_SIZE;
+
+            // When activating a particle
+            function activateParticle() {
+                if (availableParticleCount > 0) {
+                    for (let i = 0; i < particlePool.length; i++) {
+                        if (!particlePool[i].active) {
+                            particlePool[i].active = true;
+                            availableParticleCount--;
+                            return particlePool[i];
+                        }
+                    }
+                }
+                return null;
+            }
+
+            // When deactivating a particle
+            function deactivateParticle(particle) {
+                particle.active = false;
+                availableParticleCount++;
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = activateParticle();
+                if (!particle) continue;
+
+                let color = rainbowMode ? 
+                    `hsla(${Math.random() * 360}, 100%, 50%, 0.8)` : 
+                    (priceDiff > 0 ? 'rgba(0, 255, 0, 0.8)' : 'rgba(255, 0, 0, 0.8)');
+                
+                particle.x = canvas.width / 2;
+                particle.y = canvas.height / 2;
+                particle.speed = (Math.random() * 1.5) + 0.2;
+                particle.angle = Math.random() * Math.PI * 2;
+                particle.size = Math.random() * selectedSize;
+                particle.color = color;
+                particle.alpha = 1;
+                particle.decay = 0.0001 + Math.random() * 0.0002;
+                
+                particles.push(particle);
+            }
+        }
+
+        const bitcoinLogo = new Image();
+        let rotation = 0;
+        bitcoinLogo.src = 'Bitcoin.png';
+        
+        bitcoinLogo.onerror = (error) => {
+        };
+
+        bitcoinLogo.onload = () => {
+        };
+
+        const bitcoinOmLogo = new Image();
+        bitcoinOmLogo.src = 'BitcoinOm.png';
+
+        let currentLogo = 'bitcoin';  // Default state
+        const logoSelect = document.getElementById('logoSelect');
+
+        logoSelect.addEventListener('change', () => {
+            currentLogo = logoSelect.value;
+        });
+
+        let chartColorHue = 0;
+
+        function drawPriceChart() {
+            if (priceHistory.length < 2) return;
+
+            const minPrice = Math.min(...priceHistory);
+            const maxPrice = Math.max(...priceHistory);
+            const priceRange = maxPrice - minPrice;
+
+            chartColorHue = (chartColorHue + 0.2) % 360;
+
+            ctx.beginPath();
+            ctx.strokeStyle = `hsla(${chartColorHue}, 100%, 50%, 0.1)`;
+            ctx.lineWidth = 2;
+
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'rgba(247, 147, 26, 0.3)';
+            ctx.textAlign = 'center';
+
+            priceHistory.forEach((price, i) => {
+                const x = (i / (priceHistory.length - 1)) * canvas.width;
+                const y = canvas.height - ((price - minPrice) / priceRange * (canvas.height * 0.8));
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.fillText(`$${price.toFixed(0)}`, x, y - 10);
+            });
+
+            ctx.stroke();
+
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.closePath();
+            ctx.fillStyle = `hsla(${chartColorHue}, 100%, 50%, 0.006)`;
+            ctx.fill();
+        }
+
+        function drawParticles() {
+            ctx.fillStyle = `rgba(17, 17, 17, ${fadeRate})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            if (showWhitepaper) {
+                floatingTexts.forEach((text, index) => {
+                    if (!text.update()) {
+                        floatingTexts[index] = new FloatingText();
+                    }
+                    text.draw(ctx);
+                });
+            }
+            
+            if (showBlobs) {
+                blobs.forEach(blob => {
+                    blob.update();
+                    blob.draw(ctx);
+                });
+            }
+            
+            if (showChart) {
+                drawPriceChart();
+            }
+
+            if (showVectorPrice) {
+                vectorPrice.update();
+                vectorPrice.draw(ctx);
+            }
+
+            if (currentLogo !== 'none') {
+                const logoSize = Math.min(canvas.width, canvas.height) * 0.95;
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(rotation);
+                
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = 'rgba(247, 147, 26, 0.5)';
+                ctx.globalAlpha = 0.01;
+                
+                const selectedLogo = currentLogo === 'bitcoin' ? bitcoinLogo : bitcoinOmLogo;
+                ctx.drawImage(selectedLogo, -logoSize/2, -logoSize/2, logoSize, logoSize);
+                ctx.restore();
+                rotation += 0.001;
+            }
+
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                if (p.color.startsWith('rgba')) {
+                    const [r, g, b] = p.color.match(/\d+/g);
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha})`;
+                } else if (p.color.startsWith('hsla')) {
+                    ctx.fillStyle = p.color; 
+                }
+                ctx.fill();
+            });
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                if (p.type === 'ripple') {
+                    p.size += 8;
+                    p.alpha *= 0.97;
+                    if (p.size >= p.maxSize || p.alpha < 0.01) {
+                        p.active = false;  // Return to pool
+                        particles.splice(i, 1);
+                    }
+                } else {
+                    p.x += Math.cos(p.angle) * p.speed;
+                    p.y += Math.sin(p.angle) * p.speed;
+                    p.alpha -= p.decay;
+                    if (p.alpha <= 0) {
+                        p.active = false;  // Return to pool
+                        particles.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            updateParticles();
+            drawParticles();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        ws.onclose = () => {
+        };
+
+        ws.onerror = (error) => {
+        };
+
+        window.addEventListener('resize', () => {
+            // Get the device pixel ratio, but force 1 for Edge/Lite mode
+            const pixelRatio = isEdge ? 1 : (window.devicePixelRatio || 1);
+            
+            canvas.width = window.innerWidth * (isEdge ? 0.5 : pixelRatio);
+            canvas.height = window.innerHeight * (isEdge ? 0.5 : pixelRatio);
+            
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            
+        });
+
+        window.dispatchEvent(new Event('resize'));
+
+        const blockDisplay = document.getElementById('blockDisplay');
+        
+        async function fetchBlockHeight() {
+            try {
+                const response = await fetch('https://mempool.space/api/blocks/tip/height');
+                const blockHeight = await response.text();
+                blockDisplay.textContent = `BLOCK HEIGHT: ${blockHeight}`;
+            } catch (error) {
+                blockDisplay.textContent = 'BLOCK HEIGHT: Error';
+            }
+        }
+
+        fetchBlockHeight();
+        
+        setInterval(fetchBlockHeight, 60000);
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        let mouseTrailsEnabled = false;
+        const toggleMouseButton = document.getElementById('toggleMouse');
+
+        toggleMouseButton.addEventListener('click', () => {
+            mouseTrailsEnabled = !mouseTrailsEnabled;
+            toggleMouseButton.textContent = mouseTrailsEnabled ? 'MOUSE TRAILS ON' : 'MOUSE TRAILS OFF';
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!mouseTrailsEnabled) return;
+            
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            if (Math.random() < 0.3) {
+                particles.push({
+                    x: mouseX,
+                    y: mouseY,
+                    speed: Math.random() * 2 + 1,
+                    angle: Math.random() * Math.PI * 2,
+                    size: Math.random() * 3 + 1,
+                    color: `hsla(${Math.random() * 360}, 100%, 50%, 0.8)`,
+                    alpha: 1,
+                    decay: 0.01 + Math.random() * 0.02
+                });
+            }
+            needsUpdate = true;
+        });
+
+        const toggleChartButton = document.getElementById('toggleChart');
+
+        toggleChartButton.addEventListener('click', () => {
+            showChart = !showChart;
+            toggleChartButton.textContent = showChart ? 'CHART ON' : 'CHART OFF';
+            needsUpdate = true;
+        });
+
+        document.getElementById('toggleColor').addEventListener('change', function() {
+            rainbowMode = this.value === 'on';
+        });
+
+        const toggleBlobsButton = document.getElementById('toggleBlobs');
+        toggleBlobsButton.addEventListener('click', () => {
+            showBlobs = !showBlobs;
+            toggleBlobsButton.textContent = showBlobs ? 'COLOUR BLOBS ON' : 'COLOUR BLOBS OFF';
+            needsUpdate = true;
+        });
+
+        class Blob {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.radius = 50 + Math.random() * 100;
+                this.hue = Math.random() * 360;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Bounce off walls
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                
+                // Slowly change hue
+                this.hue = (this.hue + 0.5) % 360;
+            }
+
+            draw(ctx) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, 0.01)`;
+                ctx.fill();
+            }
+        }
+
+        // Initialize blobs
+        for (let i = 0; i < blobCount; i++) {
+            blobs.push(new Blob());
+        }
+
+        class FloatingText {
+            constructor() {
+                this.text = whitePaperFragments[Math.floor(Math.random() * whitePaperFragments.length)];
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speed = 0.2 + Math.random() * 0.3;
+                this.angle = Math.random() * Math.PI * 2;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                this.alpha = 0;
+                this.fadeIn = true;
+                
+                // Add random font size
+                this.fontSize = 10 + Math.floor(Math.random() * 8);
+                
+                // Add random color
+                const colors = [
+                    'rgb(247, 147, 26)',    // Bitcoin orange
+                    'rgb(255, 255, 255)',   // White
+                    'rgb(242, 169, 0)',     // Golden
+                    'rgb(255, 204, 0)',     // Yellow gold
+                    'rgb(255, 140, 0)'      // Dark orange
+                ];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            update() {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                this.rotation += this.rotationSpeed;  // Update rotation
+
+                // Fade in/out
+                if (this.fadeIn) {
+                    this.alpha += 0.001;
+                    if (this.alpha >= 0.3) this.fadeIn = false;
+                } else {
+                    this.alpha -= 0.001;
+                }
+
+                // Wrap around screen
+                if (this.x < -100) this.x = canvas.width + 100;
+                if (this.x > canvas.width + 100) this.x = -100;
+                if (this.y < -20) this.y = canvas.height + 20;
+                if (this.y > canvas.height + 20) this.y = -20;
+
+                return this.alpha > 0;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.font = `${this.fontSize}px "Courier New", monospace`;
+                ctx.fillStyle = this.color.replace('rgb', 'rgba').replace(')', `, ${this.alpha})`);
+                ctx.fillText(this.text, -ctx.measureText(this.text).width / 2, 0);
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < maxFloatingTexts; i++) {
+            floatingTexts.push(new FloatingText());
+        }
+
+        const toggleWhitepaperButton = document.getElementById('toggleWhitepaper');
+        toggleWhitepaperButton.addEventListener('click', () => {
+            showWhitepaper = !showWhitepaper;
+            toggleWhitepaperButton.textContent = showWhitepaper ? 'WHITEPAPER TEXT ON' : 'WHITEPAPER TEXT OFF';
+        });
+
+        document.getElementById('fadeRate').addEventListener('change', function(e) {
+            fadeRate = parseFloat(e.target.value);
+        });
+
+        async function fetchMarketCap() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true');
+                const data = await response.json();
+                const marketCap = data.bitcoin.usd_market_cap;
+                
+                let formattedMarketCap;
+                if (marketCap >= 1e12) {
+                    formattedMarketCap = `${(marketCap / 1e12).toFixed(2)}T`;
+                } else {
+                    formattedMarketCap = `${(marketCap / 1e9).toFixed(2)}B`;
+                }
+                
+                document.getElementById('marketCapDisplay').textContent = `MARKET CAP: $${formattedMarketCap}`;
+            } catch (error) {
+                document.getElementById('marketCapDisplay').textContent = 'MARKET CAP: Error';
+            }
+        }
+
+        fetchMarketCap();
+        setInterval(fetchMarketCap, 60000);
+
+        document.querySelector('.controls-header').addEventListener('click', function() {
+            const content = document.querySelector('.controls-content');
+            content.classList.toggle('show');
+            this.textContent = content.classList.contains('show') ? '- CLOSE CONTROLS' : '+ OPEN CONTROLS';
+        });
+
+        const hashrateDisplay = document.getElementById('hashrateDisplay');
+
+        async function fetchHashrate() {
+            try {
+                const response = await fetch('https://mempool.space/api/v1/mining/hashrate/3d');
+                const data = await response.json();
+                const hashrate = data.currentHashrate;
+                const hashrateEH = (hashrate / 1e18).toFixed(2); // Convert to EH/s
+                hashrateDisplay.textContent = `HASHRATE: ${hashrateEH} EH/s`;
+            } catch (error) {
+                hashrateDisplay.textContent = 'HASHRATE: Error';
+            }
+        }
+
+        fetchHashrate();
+
+        setInterval(fetchHashrate, 60000);
+
+        const toggleVectorButton = document.getElementById('toggleVector');
+        toggleVectorButton.addEventListener('click', () => {
+            showVectorPrice = !showVectorPrice;
+            toggleVectorButton.textContent = showVectorPrice ? 'VECTOR PRICE ON' : 'VECTOR PRICE OFF';
+        });
+
+        
+        const controlTab = document.querySelector('.control-tab');
+        const controlContainer = document.querySelector('.text-controls-container');
+
+        controlTab.addEventListener('click', () => {
+            controlContainer.classList.toggle('hidden');
+            controlTab.textContent = controlContainer.classList.contains('hidden') ? 'SHOW' : 'HIDE';
+        });
+
+        if (isEdge) {
+            maxParticles = 250;  // Half of normal
+            fadeRate = 0.05;     // Slightly faster fade
+            
+            // Re-enable all features but with reduced intensity
+            showBlobs = true;
+            showWhitepaper = true;
+            showChart = true;
+            mouseTrailsEnabled = false;
+            
+            document.getElementById('toggleBlobs').disabled = false;
+            document.getElementById('toggleWhitepaper').disabled = false;
+            document.getElementById('toggleChart').disabled = false;
+            document.getElementById('toggleMouse').disabled = false;
+        }
+
+        const wtfButton = document.querySelector('.wtf-button');
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const closeModal = document.querySelector('.close-modal');
+
+        wtfButton.addEventListener('click', () => {
+            modalOverlay.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+        });
+
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.style.display = 'none';
+            }
+        });
+
+        document.getElementById('performanceMode').addEventListener('change', function(e) {
+            isEdge = e.target.value === 'lite';
+            
+            if (isEdge) {
+                maxParticles = 250;  // Half of normal
+                fadeRate = 0.05;     // Significantly faster fade
+                
+                document.getElementById('fadeRate').value = '0.05';
+                
+                showBlobs = true;
+                showWhitepaper = true;
+                showChart = true;
+                mouseTrailsEnabled = false;
+            } else {
+                maxParticles = 500;  // Normal amount
+                fadeRate = 0.02;     // Normal fade
+                
+                document.getElementById('fadeRate').value = '0.02';
+            }
+            
+            particles.length = 0;
+            
+            window.dispatchEvent(new Event('resize'));
+            
+        });
+
+        document.getElementById('fullscreenButton').addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+                this.textContent = 'EXIT FULLSCREEN';
+            } else {
+                document.exitFullscreen();
+                this.textContent = 'FULLSCREEN';
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            const fullscreenButton = document.getElementById('fullscreenButton');
+            fullscreenButton.textContent = document.fullscreenElement ? 'EXIT FULLSCREEN' : 'FULLSCREEN';
+        });
+
+        document.getElementById('screenshotButton').addEventListener('click', function() {
+            // Create a temporary canvas to draw everything
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Draw the background
+            tempCtx.fillStyle = '#111';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Draw the main canvas
+            tempCtx.drawImage(canvas, 0, 0);
+            
+            const logo = document.querySelector('.logo-overlay');
+            if (logo && logo.complete && logo.naturalHeight !== 0) {
+                const logoRect = logo.getBoundingClientRect();
+                tempCtx.drawImage(logo, 
+                    logoRect.left * (canvas.width / window.innerWidth), 
+                    logoRect.top * (canvas.height / window.innerHeight),
+                    logo.width * (canvas.width / window.innerWidth),
+                    logo.height * (canvas.height / window.innerHeight)
+                );
+            }
+            
+            const link = document.createElement('a');
+            link.download = 'satadelica-' + new Date().toISOString().slice(0,19).replace(/[^0-9]/g, '') + '.png';
+            link.href = tempCanvas.toDataURL('image/png');
+            link.click();
+            
+            this.textContent = 'SAVED!';
+            setTimeout(() => {
+                this.textContent = 'SCREENSHOT';
+            }, 2000);
+        });
+
+        function savePreferences() {
+            const preferences = {
+                particleSize: document.getElementById('particleSize').value,
+                fadeRate: document.getElementById('fadeRate').value,
+                showWhitepaper: showWhitepaper,
+                logoType: document.getElementById('logoSelect').value,
+                showBlobs: showBlobs,
+                showChart: showChart,
+                colorMode: document.getElementById('toggleColor').value,
+                mouseTrails: mouseTrailsEnabled,
+                showVectorPrice: showVectorPrice,
+                performanceMode: document.getElementById('performanceMode').value
+            };
+            localStorage.setItem('satadelicaPreferences', JSON.stringify(preferences));
+        }
+
+        function loadPreferences() {
+            const saved = localStorage.getItem('satadelicaPreferences');
+            if (saved) {
+                const preferences = JSON.parse(saved);
+                
+                document.getElementById('particleSize').value = preferences.particleSize;
+                document.getElementById('fadeRate').value = preferences.fadeRate;
+                document.getElementById('performanceMode').value = preferences.performanceMode;
+                
+                document.getElementById('logoSelect').value = preferences.logoType;
+                currentLogo = preferences.logoType;  // This sets the actual logo variable
+                
+                document.getElementById('toggleColor').value = preferences.colorMode;
+                rainbowMode = preferences.colorMode === 'on';  // This sets the actual color mode
+                
+                showWhitepaper = preferences.showWhitepaper;
+                document.getElementById('toggleWhitepaper').textContent = showWhitepaper ? 'WHITEPAPER TEXT ON' : 'WHITEPAPER TEXT OFF';
+                
+                showBlobs = preferences.showBlobs;
+                document.getElementById('toggleBlobs').textContent = showBlobs ? 'COLOUR BLOBS ON' : 'COLOUR BLOBS OFF';
+                
+                showChart = preferences.showChart;
+                document.getElementById('toggleChart').textContent = showChart ? 'CHART ON' : 'CHART OFF';
+                
+                mouseTrailsEnabled = preferences.mouseTrails;
+                document.getElementById('toggleMouse').textContent = mouseTrailsEnabled ? 'MOUSE TRAILS ON' : 'MOUSE TRAILS OFF';
+                
+                showVectorPrice = preferences.showVectorPrice;
+                document.getElementById('toggleVector').textContent = showVectorPrice ? 'VECTOR PRICE ON' : 'VECTOR PRICE OFF';
+            }
+        }
+
+        document.querySelectorAll('.controls-content select, .controls-content button').forEach(element => {
+            element.addEventListener('change', savePreferences);
+            element.addEventListener('click', savePreferences);
+        });
+
+        document.addEventListener('DOMContentLoaded', loadPreferences);
+
+        document.getElementById('resetButton').addEventListener('click', function() {
+            localStorage.removeItem('satadelicaPreferences');
+            
+            document.getElementById('particleSize').value = '1';
+            document.getElementById('fadeRate').value = '0.02';
+            document.getElementById('logoSelect').value = 'bitcoin';
+            document.getElementById('toggleColor').value = 'off';
+            document.getElementById('performanceMode').value = 'normal';
+            
+            currentLogo = 'bitcoin';
+            rainbowMode = false;
+            showWhitepaper = true;
+            showBlobs = true;
+            showChart = true;
+            mouseTrailsEnabled = false;
+            showVectorPrice = true;
+            
+            document.getElementById('toggleWhitepaper').textContent = 'WHITEPAPER TEXT ON';
+            document.getElementById('toggleBlobs').textContent = 'COLOUR BLOBS ON';
+            document.getElementById('toggleChart').textContent = 'CHART ON';
+            document.getElementById('toggleMouse').textContent = 'MOUSE TRAILS OFF';
+            document.getElementById('toggleVector').textContent = 'VECTOR PRICE ON';
+            
+            this.textContent = 'RESET COMPLETE!';
+            setTimeout(() => {
+                this.textContent = 'RESET TO DEFAULTS';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
